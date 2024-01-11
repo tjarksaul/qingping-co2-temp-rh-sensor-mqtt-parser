@@ -12,6 +12,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - shell: bash
+      run: |
+        echo "sha_short=$(git rev-parse --short "${{ github.sha }}")" >> "$GITHUB_ENV"
     - name: Build the Docker image
       run: |
         docker build . --file Dockerfile --tag ghcr.io/tjarksaul/qingping-co2-temp-rh-sensor-mqtt-parser:${{ env.sha_short }}
