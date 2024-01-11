@@ -1,0 +1,23 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "master" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build the Docker image
+      run: |
+        docker build . --file Dockerfile --tag ghcr.io/tjarksaul/qingping-co2-temp-rh-sensor-mqtt-parser:${{ env.sha_short }}
+        docker tag ghcr.io/tjarksaul/qingping-co2-temp-rh-sensor-mqtt-parser:${{ env.sha_short }} ghcr.io/tjarksaul/qingping-co2-temp-rh-sensor-mqtt-parser:latest
+    - name: Docker push backend dev
+      run: |
+        echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u tjarksaul --password-stdin
+        docker push ghcr.io/tjarksaul/qingping-co2-temp-rh-sensor-mqtt-parser:${{ env.sha_short }}
+        docker push ghcr.io/tjarksaul/qingping-co2-temp-rh-sensor-mqtt-parser:latest
